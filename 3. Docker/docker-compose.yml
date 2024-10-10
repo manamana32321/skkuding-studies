@@ -1,19 +1,34 @@
-version: '3.8'
-
 services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
   web1:
     build: ./web
     ports:
       - "3001:3000"
-    volumes:
-      - ./web/prisma/dev.db:/usr/src/app/prisma/dev.db
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/postgres"
+    depends_on:
+      - db
+    command: >
+      sh -c "./migrate.sh &&
+             npm start"
 
   web2:
     build: ./web
     ports:
       - "3002:3000"
-    volumes:
-      - ./web/prisma/dev.db:/usr/src/app/prisma/dev.db
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/postgres"
+    depends_on:
+      - db
+    command: "npm start"
 
   nginx:
     image: nginx:latest
@@ -25,3 +40,6 @@ services:
     depends_on:
       - web1
       - web2
+
+volumes:
+  db-data:

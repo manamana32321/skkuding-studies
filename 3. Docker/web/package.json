@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@prisma/client": "^5.20.0",
+    "bcrypt": "^5.1.1",
     "express": "^4.21.1",
     "nodemon": "^3.1.7",
     "prisma": "^5.20.0",
@@ -8,7 +9,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
+    "dev": "sh ./migrate.sh && nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
