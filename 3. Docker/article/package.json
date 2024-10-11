@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "dotenv-cli": "^7.4.2",
+    "express": "^4.21.1",
+    "prisma": "^5.20.0"
+  },
+  "scripts": {
+    "start": "prisma generate && node app.js",
+    "build": "dotenv -e ../.env.development npx prisma migrate dev --name init"
+  }
+}
