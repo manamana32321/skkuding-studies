@@ -1,0 +1,59 @@
+services:
+  caddy:
+    image: caddy:latest
+    ports:
+      - '80:80'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    depends_on:
+      - frontend
+      - auth
+      - article
+
+  db:
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    env_file:
+      - ./postgres/.env.development
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  auth:
+    build: ./auth
+    ports:
+      - '8100:3000'
+    env_file:
+      - ./auth/.env
+    depends_on:
+      - db
+    command: >
+      sh -c "
+        yarn prisma migrate deploy &&
+        npm start"
+
+  article:
+    build: ./article
+    ports:
+      - '8200:3000'
+    env_file:
+      - ./article/.env
+    depends_on:
+      - db
+    command: >
+      sh -c "
+        yarn prisma migrate deploy &&
+        npm start"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+    command: "npm start"
+
+volumes:
+  db-data:
