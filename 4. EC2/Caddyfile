@@ -3,8 +3,6 @@
 }
 
 :80 {
-    file_server
-
     handle {
         reverse_proxy frontend:3000
     }
