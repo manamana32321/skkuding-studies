@@ -84,9 +84,5 @@ typings/
 # TernJS port file
 .tern-port
 
-# VS Code directories
-.vscode/
-.history/
-
 # MacOS files
 .DS_Store

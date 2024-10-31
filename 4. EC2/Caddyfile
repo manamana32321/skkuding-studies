@@ -6,24 +6,6 @@
     file_server
 
     handle {
-        reverse_proxy frontend:3000
-    }
-
-    handle /api/auth* {
-        uri strip_prefix /api/auth
-        reverse_proxy {
-            to auth:3000
-            header_up Host {host}
-            header_up X-Real-IP {remote}
-        }
-    }
-
-    handle /api/articles* {
-        uri strip_prefix /api/articles
-        reverse_proxy {
-            to article:3000
-            header_up Host {host}
-            header_up X-Real-IP {remote}
-        }
+        reverse_proxy app:3000
     }
 }
