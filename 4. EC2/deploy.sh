@@ -1,7 +1,8 @@
+# 이미지 빌드
 docker-compose build
-docker tag 3docker-auth manayume/3docker-auth:latest
-docker tag 3docker-article manayume/3docker-article:latest
-docker tag 3docker-frontend manayume/3docker-frontend:latest
-docker push manayume/3docker-auth:latest
-docker push manayume/3docker-article:latest
-docker push manayume/3docker-frontend:latest
+
+# 로컬 이미지에 태그 지정
+docker tag skkuding-study-app manayume/skkuding-study-app:latest
+
+# Docker Hub에 이미지 푸시
+docker push manayume/skkuding-study-app:latest

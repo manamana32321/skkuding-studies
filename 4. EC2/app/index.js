@@ -61,13 +61,15 @@ app.post("/api/login", (req, res) => {
 })
 
 app.get("/api/users", (req, res) => {
+  const body = req.body
+  
   db.setValue("username", body.username)
   db.setValue("password", body.password)
   db.setValue("email", body.email)
-  res.send({
+  res.send(JSON.stringify({
     username: db.getValue("username"),
     email: db.getValue("email")
-  })
+  }))
 })
 
 app.get("/api/os", (req, res) => {
