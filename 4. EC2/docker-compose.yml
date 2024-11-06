@@ -1,15 +1,6 @@
 services:
-  caddy:
-    image: caddy:latest
-    ports:
-      - '80:80'
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-    depends_on:
-      - app
-
-  app:
+  skkuding-study-app:
     build: ./app
+    image: skkuding-study-app:latest
     ports:
       - '3000:3000'
-      
