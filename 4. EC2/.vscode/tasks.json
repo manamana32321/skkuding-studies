@@ -7,6 +7,15 @@
       "command": "docker-compose down && docker-compose up --build",
       "group": {
         "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Docker: Build and Upload to AWS ECR",
+      "type": "shell",
+      "command": "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 361769566809.dkr.ecr.ap-northeast-2.amazonaws.com && docker build -t skkuding-study ./app && docker tag skkuding-study:latest 361769566809.dkr.ecr.ap-northeast-2.amazonaws.com/skkuding-study:latest && docker push 361769566809.dkr.ecr.ap-northeast-2.amazonaws.com/skkuding-study:latest",
+      "group": {
+        "kind": "build",
         "isDefault": true
       }
     }
