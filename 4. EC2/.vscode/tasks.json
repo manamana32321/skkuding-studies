@@ -7,7 +7,31 @@
       "command": "docker-compose down && docker-compose up --build",
       "group": {
         "kind": "build",
+      }
+    },
+    {
+      "label": "Terraform: Init and Plan",
+      "type": "shell",
+      "command": "terraform init && terraform plan",
+      "group": {
+        "kind": "build",
         "isDefault": true
+      }
+    },
+    {
+      "label": "Terraform: Apply",
+      "type": "shell",
+      "command": "terraform apply",
+      "group": {
+        "kind": "build",
+      }
+    },
+    {
+      "label": "Terraform: Destroy",
+      "type": "shell",
+      "command": "terraform destroy",
+      "group": {
+        "kind": "build",
       }
     }
   ]
