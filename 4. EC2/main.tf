@@ -22,3 +22,7 @@ resource "aws_vpc" "example" {
 module "s3" {
   source = "./modules/s3"
 }
+
+module "cloudfront" {
+  source = "./modules/cloudfront"
+}

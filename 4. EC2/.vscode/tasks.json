@@ -33,6 +33,14 @@
       "group": {
         "kind": "build",
       }
+    },
+    {
+      "label": "Terraform: Init, Plan and Apply",
+      "type": "shell",
+      "command": "terraform init && terraform plan && terraform apply",
+      "group": {
+        "kind": "build",
+      }
     }
   ]
 }
