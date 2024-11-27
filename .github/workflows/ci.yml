@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+      actions: read
 
     container:
       image: mcr.microsoft.com/cstsectools/codeql-container
