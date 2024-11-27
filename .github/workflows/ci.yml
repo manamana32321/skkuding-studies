@@ -27,8 +27,8 @@ jobs:
       - name: Build
         run: |
           cd ./4. EC2
-          npm install
-          npm run build
+          sudo npm install
+          sudo npm run build
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
