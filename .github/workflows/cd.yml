@@ -28,9 +28,9 @@ jobs:
 
       - name: Upload file to S3
         run: |
-          aws s3 cp ./index.html s3://skkuding-study/index.html
-          aws s3 cp ./script.js s3://skkuding-study/script.js
-          aws s3 cp ./style.css s3://skkuding-study/style.css
+          aws s3 cp ./static/index.html s3://skkuding-study/index.html
+          aws s3 cp ./static/script.js s3://skkuding-study/script.js
+          aws s3 cp ./static/style.css s3://skkuding-study/style.css
 
   update-ecs:
     runs-on: ubuntu-latest
