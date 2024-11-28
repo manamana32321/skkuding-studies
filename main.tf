@@ -16,7 +16,7 @@ terraform {
 # Configure the AWS Provider
 provider "aws" {
   region = "ap-northeast-2"
-  profile = "skkuding-study"
+  # profile = "skkuding-study"
 }
 
 # Create a VPC
