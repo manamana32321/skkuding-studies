@@ -9,7 +9,7 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
+  sync-s3:
     runs-on: ubuntu-latest
 
     permissions:
@@ -23,7 +23,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::361769566809:user/skkuding-study
+          role-to-assume: arn:aws:iam::361769566809:role/skkuding-study-GitHubActions
           aws-region: ap-northeast-2
 
       - name: Upload file to S3
