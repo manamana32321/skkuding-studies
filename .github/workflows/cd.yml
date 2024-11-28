@@ -1,0 +1,33 @@
+# - name: "Configure AWS Credentials" Action for GitHub Actions
+# uses: aws-actions/configure-aws-credentials@v4.0.2
+name: CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::361769566809:user/skkuding-study
+          aws-region: ap-northeast-2
+
+      - name: Upload file to S3
+        run: |
+          aws s3 cp 8. GitHub Actions/index.html s3://skkuding-study/index.html
+          aws s3 cp 8. GitHub Actions/script.js s3://skkuding-study/script.js
+          aws s3 cp 8. GitHub Actions/style.css s3://skkuding-study/style.css
