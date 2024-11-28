@@ -91,9 +91,11 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
 
       - name: Terraform Debug
         run: |
-          echo ${{ steps.init.outputs.stdout }}
-          echo ${{ steps.init.outputs.stderr }}
-          echo ${{ steps.init.outputs.exitcode }}
+          echo ${{ steps.init.conclusion }}
+          echo ${{ steps.init.outcome }}
