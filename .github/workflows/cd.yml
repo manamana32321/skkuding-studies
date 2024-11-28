@@ -23,7 +23,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::361769566809:role/skkuding-study-GitHubActions
+          role-to-assume: arn:aws:iam::361769566809:role/skkuding-study-oidc
           aws-region: ap-northeast-2
 
       - name: Upload file to S3
