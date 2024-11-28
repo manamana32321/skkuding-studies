@@ -1,0 +1,101 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  AWS_ROLE_ARN: arn:aws:iam::361769566809:role/skkuding-study-oidc
+  AWS_REGION: ap-northeast-2
+  ECR_REGISTRY: 361769566809.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: skkuding-study
+  IMAGE_TAG: latest
+
+jobs:
+  sync-s3:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload file to S3
+        run: |
+          aws s3 cp ./static/index.html s3://skkuding-study/index.html
+          aws s3 cp ./static/script.js s3://skkuding-study/script.js
+          aws s3 cp ./static/style.css s3://skkuding-study/style.css
+
+  update-ecs:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ env.ECR_REGISTRY }}
+          REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+  terraform-apply:
+    runs-on: ubuntu-latest
+    needs: [sync-s3, update-ecs]
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        id: init
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      - name: Terraform Debug
+        run: |
+          echo ${{ steps.init.conclusion }}
+          echo ${{ steps.init.outcome }}

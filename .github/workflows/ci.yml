@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze:
+    name: Analyze CodeQL
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      # 레포 코드 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # CodeQL 초기화, 분석 언어 설정
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      # CodeQL 분석 수행, 코드 취약점 확인
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
