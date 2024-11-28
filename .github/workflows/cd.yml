@@ -1,5 +1,3 @@
-# - name: "Configure AWS Credentials" Action for GitHub Actions
-# uses: aws-actions/configure-aws-credentials@v4.0.2
 name: CD
 
 on:
@@ -7,6 +5,13 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+
+env:
+  AWS_ROLE_ARN: arn:aws:iam::361769566809:role/skkuding-study-oidc
+  AWS_REGION: ap-northeast-2
+  ECR_REGISTRY: 361769566809.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: skkuding-study
+  IMAGE_TAG: latest
 
 jobs:
   sync-s3:
@@ -23,8 +28,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::361769566809:role/skkuding-study-oidc
-          aws-region: ap-northeast-2
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload file to S3
         run: |
@@ -46,8 +51,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::361769566809:role/skkuding-study-oidc
-          aws-region: ap-northeast-2
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -55,9 +60,31 @@ jobs:
 
       - name: Build, tag, and push docker image to Amazon ECR
         env:
-          REGISTRY: 361769566809.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: skkuding-study
-          IMAGE_TAG: latest
+          REGISTRY: ${{ env.ECR_REGISTRY }}
+          REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+  terraform-apply:
+    runs-on: ubuntu-latest
+    needs: [sync-s3, update-ecs]
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        id: init
+        uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - run: terraform init
+
+
+      - run: echo ${{ steps.init.outputs.stdout }}
+      - run: echo ${{ steps.init.outputs.stderr }}
+      - run: echo ${{ steps.init.outputs.exitcode }}
