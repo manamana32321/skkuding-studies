@@ -80,11 +80,20 @@ jobs:
         id: init
         uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - run: terraform init
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
+      - name: Terraform Init
+        run: terraform init
 
-      - run: echo ${{ steps.init.outputs.stdout }}
-      - run: echo ${{ steps.init.outputs.stderr }}
-      - run: echo ${{ steps.init.outputs.exitcode }}
+      - name: Terraform Debug
+        run: |
+          echo ${{ steps.init.outputs.stdout }}
+          echo ${{ steps.init.outputs.stderr }}
+          echo ${{ steps.init.outputs.exitcode }}
